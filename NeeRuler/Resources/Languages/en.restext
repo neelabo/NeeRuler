@@ -1,0 +1,14 @@
+Menu.IsVertical=_Vertical
+Menu.IsAutoStride=_Auto stride
+Menu.IsFlatPanel=_Flat panel
+Menu.StoreLocation=_Store location
+Menu.RestoreLocation=_Restore location
+Menu.Profiles=_Profiles
+Menu.OpenProfilesFolder=_Open profiles folder...
+Menu.Exit=_Exit
+Menu.About=_About...
+Notify.AutoStride=Auto stride: {0}
+Notify.StoreLocation=Store location
+Notify.FailedToLoad=Failed to load file: {0}
+Word.On=On
+Word.Off=Off

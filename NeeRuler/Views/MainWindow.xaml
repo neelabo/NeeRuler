@@ -1,0 +1,138 @@
+﻿<Window x:Class="NeeRuler.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:NeeRuler.Views"
+        xmlns:vm="clr-namespace:NeeRuler.ViewModels"
+        xmlns:properties="clr-namespace:NeeRuler.Properties"
+        xmlns:converters="clr-namespace:NeeRuler.Converters"
+        mc:Ignorable="d"
+        Title="MainWindow"
+        d:DataContext="{d:DesignInstance vm:MainWindowViewModel, IsDesignTimeCreatable=True}"
+        d:Width="512" d:Height="128"
+        Topmost="True"
+        Background="Transparent" WindowStyle="None" AllowsTransparency="True"
+        MouseLeftButtonDown="Window_MouseLeftButtonDown"
+        MouseLeftButtonUp="Window_MouseLeftButtonUp"
+        MouseDown="Window_MouseDown"
+        MouseMove="Window_MouseMove"
+        MouseWheel="Window_MouseWheel"
+        KeyUp="Window_KeyUp"
+        DpiChanged="Window_DpiChanged"
+        ResizeMode="CanMinimize"
+        >
+
+    <Window.Resources>
+        <converters:ColorToSolidColorBrushConverter x:Key="ColorToSolidColorBrushConverter"/>
+
+        <Style x:Key="ThumbBase" TargetType="Thumb">
+            <Style.Setters>
+                <Setter Property="Opacity" Value="0.0"/>
+            </Style.Setters>
+        </Style>
+
+        <Style x:Key="ThumbHorizontal" TargetType="Thumb" BasedOn="{StaticResource ThumbBase}">
+            <Style.Setters>
+                <Setter Property="Height" Value="8"/>
+                <Setter Property="Margin" Value="16,0"/>
+            </Style.Setters>
+        </Style>
+
+        <Style x:Key="ThumbVertical" TargetType="Thumb" BasedOn="{StaticResource ThumbBase}">
+            <Style.Setters>
+                <Setter Property="Width" Value="8"/>
+                <Setter Property="Margin" Value="0,16"/>
+            </Style.Setters>
+        </Style>
+
+        <Style x:Key="ThumbCorner" TargetType="Thumb" BasedOn="{StaticResource ThumbBase}">
+            <Style.Setters>
+                <Setter Property="Width" Value="16"/>
+                <Setter Property="Height" Value="16"/>
+            </Style.Setters>
+        </Style>
+
+        <Style x:Key="ProfileMenuItem" TargetType="MenuItem">
+            <Setter Property="Header" Value="{Binding Header}"/>
+            <Setter Property="Command" Value="{Binding Command}"/>
+            <Setter Property="IsEnabled" Value="{Binding IsEnabled}"/>
+        </Style>
+
+    </Window.Resources>
+
+    <Window.Style>
+        <Style TargetType="Window">
+            <Style.Triggers>
+                <Trigger Property="IsActive" Value="False">
+                    <Setter Property="Opacity" Value="0.5"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Style>
+
+    <Grid x:Name="Root" Background="#01000000" UseLayoutRounding="True" SnapsToDevicePixels="True">
+        <Border CornerRadius="8" Margin="4" >
+            <Border.OpacityMask>
+                <VisualBrush>
+                    <VisualBrush.Visual>
+                        <Border Background="Black" SnapsToDevicePixels="True"
+                            CornerRadius="{Binding CornerRadius, RelativeSource={RelativeSource AncestorType=Border}}"
+                            Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Border}}"
+                            Height="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType=Border}}" />
+                    </VisualBrush.Visual>
+                </VisualBrush>
+            </Border.OpacityMask>
+
+            <Grid x:Name="RulerGrid" >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="{Binding TopAreaHeight, Mode=OneWay}"/>
+                    <RowDefinition Height="{Binding TextAreaHeight, Mode=OneWay}"/>
+                    <RowDefinition Height="{Binding BaseLineHeight, Mode=OneWay}"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid.ContextMenu>
+                    <ContextMenu x:Name="MainContextMenu">
+                        <MenuItem Header="{properties:TextBinding Menu.IsAutoStride}" IsChecked="{Binding IsAutoStride}" Command="{Binding AppCommand}" CommandParameter="ToggleIsAutoStride"/>
+                        <MenuItem Header="{properties:TextBinding Menu.IsVertical}" IsChecked="{Binding IsVertical}" Command="{Binding AppCommand}" CommandParameter="ToggleIsVertical"/>
+                        <MenuItem Header="{properties:TextBinding Menu.IsFlatPanel}" IsChecked="{Binding IsFlatPanel}" Command="{Binding AppCommand}" CommandParameter="ToggleIsFlatPanel"/>
+                        <Separator/>
+                        <MenuItem Header="{properties:TextBinding Menu.StoreLocation}" Command="{Binding AppCommand}" CommandParameter="StoreLocation"/>
+                        <MenuItem Header="{properties:TextBinding Menu.RestoreLocation}" Command="{Binding AppCommand}" CommandParameter="RestoreLocation"/>
+                        <Separator/>
+                        <MenuItem Header="{properties:TextBinding Menu.Profiles}" ItemsSource="{Binding ProfileMenuItems}" ItemContainerStyle="{StaticResource ProfileMenuItem}" SubmenuOpened="MenuItem_SubmenuOpened"/>
+                        <MenuItem Header="{properties:TextBinding Menu.OpenProfilesFolder}" Command="{Binding AppCommand}" CommandParameter="OpenProfilesFolder" />
+                        <Separator/>
+                        <MenuItem Header="{properties:TextBinding Menu.About}" Command="{Binding AboutCommand}" />
+                        <Separator/>
+                        <MenuItem Header="{properties:TextBinding Menu.Exit}" Command="{Binding AppCommand}" CommandParameter="Exit" />
+                    </ContextMenu>
+                </Grid.ContextMenu>
+                <Grid.LayoutTransform>
+                    <RotateTransform Angle="{Binding LayoutAngle}" />
+                </Grid.LayoutTransform>
+
+                <Grid Grid.Row="0" Background="{Binding BackgroundColor, Converter={StaticResource ColorToSolidColorBrushConverter}}" />
+                <Grid Grid.Row="1" Background="{Binding TextLineColor, Converter={StaticResource ColorToSolidColorBrushConverter}}" />
+                <Grid Grid.Row="2" Background="{Binding BaseLineColor, Converter={StaticResource ColorToSolidColorBrushConverter}}"/>
+                <Grid Grid.Row="3" Background="{Binding BackgroundColor, Converter={StaticResource ColorToSolidColorBrushConverter}}" />
+            </Grid>
+        </Border>
+
+        <Border x:Name="MessageBorder" Background="White" HorizontalAlignment="Left" VerticalAlignment="Top" CornerRadius="4" Margin="10" Opacity="0.0">
+            <TextBlock x:Name="MessageTextBlock" TextWrapping="Wrap" Margin="8,2" />
+        </Border>
+
+        <Grid x:Name="ResizeGrid">
+            <Thumb x:Name="ThumbW" Style="{StaticResource ThumbVertical}" HorizontalAlignment="Left" Cursor="SizeWE" DragDelta="ThumbW_DragDelta"/>
+            <Thumb x:Name="ThumbE" Style="{StaticResource ThumbVertical}" HorizontalAlignment="Right" Cursor="SizeWE" DragDelta="ThumbE_DragDelta"/>
+            <Thumb x:Name="ThumbN" Style="{StaticResource ThumbHorizontal}" VerticalAlignment="Top" Cursor="SizeNS" DragDelta="ThumbN_DragDelta"/>
+            <Thumb x:Name="ThumbS" Style="{StaticResource ThumbHorizontal}" VerticalAlignment="Bottom" Cursor="SizeNS" DragDelta="ThumbS_DragDelta"/>
+            <Thumb x:Name="ThumbNW" Style="{StaticResource ThumbCorner}" VerticalAlignment="Top" HorizontalAlignment="Left" Cursor="SizeNWSE" DragDelta="ThumbNW_DragDelta"/>
+            <Thumb x:Name="ThumbNE" Style="{StaticResource ThumbCorner}" VerticalAlignment="Top" HorizontalAlignment="Right" Cursor="SizeNESW" DragDelta="ThumbNE_DragDelta"/>
+            <Thumb x:Name="ThumbSW" Style="{StaticResource ThumbCorner}" VerticalAlignment="Bottom" HorizontalAlignment="Left" Cursor="SizeNESW" DragDelta="ThumbSW_DragDelta"/>
+            <Thumb x:Name="ThumbSE" Style="{StaticResource ThumbCorner}" VerticalAlignment="Bottom" HorizontalAlignment="Right" Cursor="SizeNWSE" DragDelta="ThumbSE_DragDelta"/>
+            <Grid Tag="Suppresses cursor change" HorizontalAlignment="Left" VerticalAlignment="Top" Width="1" Height="1" Background="Transparent"/>
+        </Grid>
+    </Grid>
+</Window>

@@ -1,24 +1,3 @@
-# NeeRuler
-
-![App Icon](MakePackage/Appx/Resources/Assets/StoreLogo.scale-100.png)
-
-
-リーディング ルーラーです。文章の読みやすさをサポートするデスクトップ定規です。
-
-* 簡易的な自動移動機能があり、画面上のどのようなテキストにも対応しています。
-* 外観や詳細な設定は JSON ファイルを直接編集して行います。
-
-## 動作環境
-
-- Windows 10, 64bit
-- .NET Framework 4.8
-
-## ダウンロード
-
-- [GitHub Releases](https://github.com/neelabo/NeeRuler/releases)
-- (準備中) Vector
-- (準備中) Microsoft Store
-
 ## 操作方法
 
 マウスでドラッグして読みたいテキスト行に合わせます。  
@@ -43,7 +22,7 @@
 ## 設定について
 
 設定は JSON ファイルを直接編集して行います。  
-コンテキストメニューの「プロファイル フォルダを開く」に設定ファイルがあります。通常、`Profiles` フォルダです。
+コンテキストメニューの「プロファイル フォルダーを開く」に設定ファイルがあります。通常、`Profiles` フォルダーです。
 
 |ファイル名|説明|
 |--|-----
@@ -100,7 +79,7 @@
 |AdjustLeft|`Shift+A` `Shift+Left`|左に調整
 |AdjustRight|`Shift+D` `Shift+Right`|右に調整
 |Exit||アプリを終了
-|OpenProfilesFolder||プロファイル フォルダを開く
+|OpenProfilesFolder||プロファイル フォルダーを開く
 |Profile-1|`1`|`Profile-1.json` を適用する
 |Profile-2|`2`|`Profile-2.json` を適用する
 |Profile-3|`3`|`Profile-3.json` を適用する

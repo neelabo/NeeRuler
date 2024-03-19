@@ -184,7 +184,7 @@ publish/
 *.azurePubxml
 # Note: Comment the next line if you want to checkin your web deploy settings,
 # but database connection strings (with potential passwords) will be unencrypted
-*.pubxml
+#*.pubxml
 *.publishproj
 
 # Microsoft Azure Web App publish settings. Comment the next line if you want to
@@ -361,3 +361,28 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# UserLocal
+.vscode/
+*.wixpdb
+!*.wxs
+/_*
+/MakePackage/NeeRuler*/
+/MakePackage/BuildCount.json
+/MakePackage/*.zip
+/MakePackage/*.msi
+/MakePackage/*.appx
+/MakePackage/*.msix
+/MakePackage/_*
+/MakePackage/Appx/_*
+/MakePackage/Appx/resources.pri.xml
+/MakePackage/Appx/Icons/_*
+/MakePackage/Appx/Icons/Pngs
+/MakePackage/Appx/Icons/TilePngs
+!/MakePackage/WixSource/x64
+!/MakePackage/WixSource/x86
+#/NeeRuler/Properties/PublishProfiles/_*
+#!/NeeRuler/Libraries/x64/
+#!/NeeRuler/Libraries/x86/
+#/NeeRuler/Languages/_*
+#/NeeRuler/Languages/Language.json

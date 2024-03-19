@@ -1,0 +1,20 @@
+{
+  "StoreLocation": "Shift+Q",
+  "RestoreLocation": "Q",
+  "ToggleIsVertical": "V",
+  "ToggleIsAutoStride": "E",
+  "ToggleIsFlatPanel": "F",
+  "MoveUp": "W,Up",
+  "MoveDown": "S,Down",
+  "MoveLeft": "A,Left",
+  "MoveRight": "D,Right",
+  "AdjustUp": "Shift+W,Shift+Up",
+  "AdjustDown": "Shift+S,Shift+Down",
+  "AdjustLeft": "Shift+A,Shift+Left",
+  "AdjustRight": "Shift+D,Shift+Right",
+  "Exit": "",
+  "OpenProfilesFolder": "",
+  "Profile-1": "1",
+  "Profile-2": "2",
+  "Profile-3": "3"
+}

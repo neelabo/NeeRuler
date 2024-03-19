@@ -1,0 +1,14 @@
+Menu.IsVertical=縦に配置(_V)
+Menu.IsAutoStride=自動ストライド(_A)
+Menu.IsFlatPanel=フラット パネル(_F)
+Menu.StoreLocation=位置を記憶(_S)
+Menu.RestoreLocation=位置を復元(_R)
+Menu.Profiles=プロファイル(_P)
+Menu.OpenProfilesFolder=プロファイル フォルダーを開く(_O)...
+Menu.Exit=終了(_X)
+Menu.About=このアプリについて(_A)...
+Notify.AutoStride=自動ストライド: {0}
+Notify.StoreLocation=位置を記憶
+Notify.FailedToLoadFile=ファイルの読み込みに失敗しました: {0}
+Word.On=ON
+Word.Off=OFF

@@ -1,0 +1,45 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net48</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <Platforms>AnyCPU;x64</Platforms>
+    <PlatformTarget>x64</PlatformTarget>
+    <ApplicationIcon>Resources\App.ico</ApplicationIcon>
+    <ApplicationManifest>App.manifest</ApplicationManifest>
+
+    <!-- NOTE: NET Framework is officially supported up to 7.3; note that some language specifications in 9.0 are not available  -->
+    <LangVersion>9.0</LangVersion>
+    <Nullable>enable</Nullable>
+
+    <Version>1.0.0</Version>
+    <Authors>NeeLaboratory</Authors>
+    <Copyright>Copyright © 2024 Ito Mitsuhiro (nee)</Copyright>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="System.Configuration" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Resource Include="Resources\Languages\ja.restext" />
+    <Resource Include="Resources\Languages\en.restext" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Profiles\KeyConfig.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Profiles\Profile-3.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Profiles\Profile-2.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Profiles\Profile-1.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>
