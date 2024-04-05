@@ -1,0 +1,2 @@
+- [Project page](https://github.com/neelabo/NeeRuler)
+- [Privacy Policy](PrivacyPolicy)
