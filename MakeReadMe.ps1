@@ -28,8 +28,8 @@ $lines += @(
     "## ダウンロード"
     ""
     "- [GitHub Releases](https://github.com/neelabo/NeeRuler/releases)"
+    "- [Microsoft Store](https://www.microsoft.com/store/apps/9NVP5Q4XM0X7)"
     "- (準備中) Vector"
-    "- (準備中) Microsoft Store"
     ""
 )
     
