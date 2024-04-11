@@ -17,7 +17,7 @@
 
 - [GitHub Releases](https://github.com/neelabo/NeeRuler/releases)
 - [Microsoft Store](https://www.microsoft.com/store/apps/9NVP5Q4XM0X7)
-- (準備中) Vector
+- [Vector](https://www.vector.co.jp/soft/winnt/personal/se526462.html)
 
 ## 操作方法
 
