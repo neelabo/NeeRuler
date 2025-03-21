@@ -521,29 +521,25 @@ function New-Msi($arch, $packageDir, $packageAppendDir, $packageMsi)
 
 		[xml]$xml = Get-Content $wxs
 
-		# remove $product.exe
-		$node = $xml.Wix.Fragment[0].DirectoryRef.Component | Where-Object{$_.File.Source -match "$product\.exe$"}
-		if ($null -ne $node)
-		{
-			$componentId = $node.Id
-			$xml.Wix.Fragment[0].DirectoryRef.RemoveChild($node)
-
-			$node = $xml.Wix.Fragment[1].ComponentGroup.ComponentRef | Where-Object{$_.Id -eq $componentId}
-			$xml.Wix.Fragment[1].ComponentGroup.RemoveChild($node)
-		}
-
-		# remove $product.exe.config
-		$node = $xml.Wix.Fragment[0].DirectoryRef.Component | Where-Object{$_.File.Source -match "$product\.exe\.config$"}
-		if ($null -ne $node)
-		{
-			$componentId = $node.Id
-			$xml.Wix.Fragment[0].DirectoryRef.RemoveChild($node)
-
-			$node = $xml.Wix.Fragment[1].ComponentGroup.ComponentRef | Where-Object{$_.Id -eq $componentId}
-			$xml.Wix.Fragment[1].ComponentGroup.RemoveChild($node)
-		}
-
+		Remove-WixComponentNode $xml "$product.exe"
+		Remove-WixComponentNode $xml "$product.exe.config"
+		Remove-WixComponentNode $xml "README.html"
+		Remove-WixComponentNode $xml "README.ja-jp.html"
+		
 		$xml.Save($wxs)
+	}
+
+	function Remove-WixComponentNode($xml, $name)
+	{
+		$node = $xml.Wix.Fragment[0].DirectoryRef.Component | Where-Object{(Split-Path $_.File.Source -Leaf) -eq $name}
+		if ($null -ne $node)
+		{
+			$componentId = $node.Id
+			$xml.Wix.Fragment[0].DirectoryRef.RemoveChild($node)
+
+			$node = $xml.Wix.Fragment[1].ComponentGroup.ComponentRef | Where-Object{$_.Id -eq $componentId}
+			$xml.Wix.Fragment[1].ComponentGroup.RemoveChild($node)
+		}
 	}
 
 	function New-MsiSub($packageMsi, $culture)
@@ -636,8 +632,7 @@ function New-Appx($arch, $packageDir, $packageAppendDir, $appx)
 	New-Readme $contentDir "en-us" ".appx"
 	New-Readme $contentDir "ja-jp" ".appx"
 
-	. $env:CersPath/_$product.Parameter.ps1
-	$param = Get-AppxParameter
+	$param = Get-Content -Raw $env:CersPath/_$product.Parameter.json | ConvertFrom-Json
 	$appxName = $param.name
 	$appxPublisher = $param.publisher
 
