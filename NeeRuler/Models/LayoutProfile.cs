@@ -49,6 +49,9 @@ namespace NeeRuler.Models
         [DataMember(Order = 12, Name = nameof(BaseLineColor))]
         public string? BaseLineColorString { get; set; }
 
+        [DataMember(Order = 13)]
+        public double? InactiveWindowOpacity { get; set; }
+
 
         [OnSerializing]
         void OnSerializing(StreamingContext context)

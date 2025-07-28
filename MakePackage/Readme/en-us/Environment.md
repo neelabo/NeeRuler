@@ -55,6 +55,7 @@ It is loaded when the application starts and the status is saved to this file wh
 |Layout|BackgroundColor|Color|Background color
 |Layout|TextLineColor|Color|Text line color
 |Layout|BaseLineColor|Color|Baseline color
+|Layout|InactiveWindowOpacity|Number|Opacity when window is inactive (0.0-1.0)
 
 ### KeyConfig.json
 

@@ -56,6 +56,7 @@
 |Layout|BackgroundColor|色|背景色
 |Layout|TextLineColor|色|テキスト ラインの色
 |Layout|BaseLineColor|色|ベースラインの色
+|Layout|InactiveWindowOpacity|数値|ウィンドウが非アクティブ時の不透明度 (0.0-1.0)
 
 ### KeyConfig.json
 

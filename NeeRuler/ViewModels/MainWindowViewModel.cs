@@ -62,6 +62,7 @@ namespace NeeRuler.ViewModels
             propertyDependency.Add(nameof(_ruler.IsVertical), nameof(IsVertical), nameof(LayoutAngle), nameof(Width), nameof(Height));
             propertyDependency.Add(nameof(_ruler.CaptureBitmap), nameof(CaptureBitmap));
             propertyDependency.Add(nameof(_ruler.ProfileIds), nameof(ProfileMenuItems));
+            propertyDependency.Add(nameof(_ruler.InactiveWindowOpacity), nameof(InactiveWindowOpacity));
 
             AppCommand = new RelayCommand<string>(e => _commandMap.ExecuteCommand(e, null));
             AboutCommand = new RelayCommand(_ruler.OpenAbout);
@@ -210,6 +211,12 @@ namespace NeeRuler.ViewModels
                 var menuItems = _ruler.ProfileIds.Select(e => CreateProfileMenuItem(e)).ToList();
                 return menuItems.Any() ? menuItems : _emptyMenuItems;
             }
+        }
+
+        public double InactiveWindowOpacity
+        {
+            get => _ruler.InactiveWindowOpacity;
+            set => _ruler.InactiveWindowOpacity = value;
         }
 
 

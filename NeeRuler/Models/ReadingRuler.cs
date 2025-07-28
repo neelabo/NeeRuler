@@ -26,6 +26,7 @@ namespace NeeRuler.Models
         private double _width = 1024.0;
         private double _height = 256.0;
         private bool _isFlatPanel = false;
+        private double _inactiveWindowOpacity = 0.5;
         private double _textLineHeight = 32.0;
         private double _textLineTopMargin = 4.0;
         private double _textLineBottomMargin = 4.0;
@@ -189,11 +190,16 @@ namespace NeeRuler.Models
             set { SetProperty(ref _dpiScale, value); }
         }
 
-
         public List<string> ProfileIds
         {
             get { return _profileIds; }
             set { SetProperty(ref _profileIds, value); }
+        }
+
+        public double InactiveWindowOpacity
+        {
+            get { return _inactiveWindowOpacity; }
+            set { SetProperty(ref _inactiveWindowOpacity, value); }
         }
 
 
@@ -453,6 +459,7 @@ namespace NeeRuler.Models
                     BaseLineHeight = BaseLineHeight,
                     IsVertical = IsVertical,
                     IsFlatPanel = IsFlatPanel,
+                    InactiveWindowOpacity = InactiveWindowOpacity,
                 },
 
                 AutoStride = new AutoStrideProfile()
@@ -502,6 +509,7 @@ namespace NeeRuler.Models
                 BaseLineHeight = layout.BaseLineHeight ?? BaseLineHeight;
                 IsVertical = layout.IsVertical ?? IsVertical;
                 IsFlatPanel = layout.IsFlatPanel ?? IsFlatPanel;
+                InactiveWindowOpacity = layout.InactiveWindowOpacity ?? InactiveWindowOpacity;
             }
 
             if (profile.AutoStride is AutoStrideProfile autoStride)

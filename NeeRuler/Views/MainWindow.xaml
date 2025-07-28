@@ -65,7 +65,7 @@
         <Style TargetType="Window">
             <Style.Triggers>
                 <Trigger Property="IsActive" Value="False">
-                    <Setter Property="Opacity" Value="0.5"/>
+                    <Setter Property="Opacity" Value="{Binding InactiveWindowOpacity}"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
