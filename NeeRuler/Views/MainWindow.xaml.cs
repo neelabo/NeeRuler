@@ -123,6 +123,11 @@ namespace NeeRuler.Views
             {
                 _skipLeftButtonClick = false;
             }
+
+            if (e.MiddleButton == MouseButtonState.Pressed)
+            {
+                _vm.ToggleIsFollowMouse();
+            }
         }
 
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -150,6 +155,9 @@ namespace NeeRuler.Views
             {
                 _isLeftButtonDown = false;
                 _skipLeftButtonClick = false;
+
+                if (_vm.IsFollowMouse) return;
+
                 try
                 {
                     this.DragMove();

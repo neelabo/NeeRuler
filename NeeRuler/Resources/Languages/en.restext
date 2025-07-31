@@ -1,6 +1,7 @@
 Menu.IsVertical=_Vertical
 Menu.IsAutoStride=_Auto stride
 Menu.IsFlatPanel=_Flat panel
+Menu.IsFollowMouse=Follow _mouse
 Menu.StoreLocation=_Store location
 Menu.RestoreLocation=_Restore location
 Menu.Profiles=_Profiles

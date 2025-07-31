@@ -4,6 +4,7 @@
   "ToggleIsVertical": "V",
   "ToggleIsAutoStride": "E",
   "ToggleIsFlatPanel": "F",
+  "ToggleIsFollowMouse": "",
   "MoveUp": "W,Up",
   "MoveDown": "S,Down",
   "MoveLeft": "A,Left",

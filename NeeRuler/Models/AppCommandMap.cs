@@ -23,6 +23,7 @@ namespace NeeRuler.Models
             AddCommand(new ToggleIsVerticalCommand(ruler), "V");
             AddCommand(new ToggleIsAutoStrideCommand(ruler), "E");
             AddCommand(new ToggleIsFlatPanelCommand(ruler), "F");
+            AddCommand(new ToggleIsFollowMouseCommand(ruler));
 
             AddCommand(new MoveUpCommand(ruler), "W,Up");
             AddCommand(new MoveDownCommand(ruler), "S,Down");

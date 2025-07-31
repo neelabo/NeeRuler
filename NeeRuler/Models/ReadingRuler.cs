@@ -37,6 +37,7 @@ namespace NeeRuler.Models
         private Color _baseLineColor = ColorUtils.FromCode(0xAA000000);
         private bool _isAutoStride = true;
         private bool _isVertical;
+        private bool _isFollowMouse;
         private double _stride = 32.0;
         private double _adjustmentStride = 2.0;
         private DpiScale _dpiScale = new DpiScale(1.0, 1.0);
@@ -172,6 +173,12 @@ namespace NeeRuler.Models
             set { SetProperty(ref _isVertical, value); }
         }
 
+        public bool IsFollowMouse
+        {
+            get { return _isFollowMouse; }
+            set { SetProperty(ref _isFollowMouse, value); }
+        }
+
         public double Stride
         {
             get { return _stride; }
@@ -241,6 +248,11 @@ namespace NeeRuler.Models
         public void ToggleIsFlatPanel()
         {
             IsFlatPanel = !IsFlatPanel;
+        }
+
+        public void ToggleIsFollowMouse()
+        {
+            IsFollowMouse = !IsFollowMouse;
         }
 
         public void StoreLocation()
@@ -460,6 +472,7 @@ namespace NeeRuler.Models
                     IsVertical = IsVertical,
                     IsFlatPanel = IsFlatPanel,
                     InactiveWindowOpacity = InactiveWindowOpacity,
+                    IsFollowMouse = IsFollowMouse,
                 },
 
                 AutoStride = new AutoStrideProfile()
@@ -510,6 +523,7 @@ namespace NeeRuler.Models
                 IsVertical = layout.IsVertical ?? IsVertical;
                 IsFlatPanel = layout.IsFlatPanel ?? IsFlatPanel;
                 InactiveWindowOpacity = layout.InactiveWindowOpacity ?? InactiveWindowOpacity;
+                IsFollowMouse = layout.IsFollowMouse ?? IsFollowMouse;
             }
 
             if (profile.AutoStride is AutoStrideProfile autoStride)

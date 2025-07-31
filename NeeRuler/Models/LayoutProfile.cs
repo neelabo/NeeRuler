@@ -52,6 +52,9 @@ namespace NeeRuler.Models
         [DataMember(Order = 13)]
         public double? InactiveWindowOpacity { get; set; }
 
+        [DataMember(Order = 14)]
+        public bool? IsFollowMouse { get; set; }
+
 
         [OnSerializing]
         void OnSerializing(StreamingContext context)

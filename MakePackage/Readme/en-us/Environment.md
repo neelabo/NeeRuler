@@ -6,6 +6,7 @@ Drag with the mouse to the line of text you want to read.
 |----|----
 |Left button|Move on to the next line
 |Right button|Context menu
+|Middle button|Toggle mouse following
 |Mouse wheel|Increase or decrease the margin above the text line
 
 Check `KeyConfig.json` in the profile folder for shortcut keys.
@@ -56,6 +57,7 @@ It is loaded when the application starts and the status is saved to this file wh
 |Layout|TextLineColor|Color|Text line color
 |Layout|BaseLineColor|Color|Baseline color
 |Layout|InactiveWindowOpacity|Number|Opacity when window is inactive (0.0-1.0)
+|Layout|IsFollowMouse|Boolean|Follow mouse
 
 ### KeyConfig.json
 
@@ -70,6 +72,7 @@ Can be modified with `Alt` `Shift` `Ctrl`.
 |ToggleIsVertical|`V`|Switching between vertical and horizontal orientation
 |ToggleIsAutoStride|`E`|Auto stride switching
 |ToggleIsFlatPanel|`F`|Flat panel switching
+|ToggleIsFollowMouse||Toggle mouse following
 |MoveUp|`W` `Up`|Move up
 |MoveDown|`S` `Down`|Move down
 |MoveLeft|`A` `Left`|Move left

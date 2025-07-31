@@ -21,6 +21,8 @@
         KeyUp="Window_KeyUp"
         DpiChanged="Window_DpiChanged"
         ResizeMode="CanMinimize"
+        local:WindowFollowMouseBehavior.IsEnabled="{Binding IsFollowMouse}"
+        local:WindowFollowMouseBehavior.NativeOffset="{Binding NativeOffset}"
         >
 
     <Window.Resources>
@@ -67,6 +69,9 @@
                 <Trigger Property="IsActive" Value="False">
                     <Setter Property="Opacity" Value="{Binding InactiveWindowOpacity}"/>
                 </Trigger>
+                <DataTrigger Binding="{Binding IsFollowMouse}" Value="True">
+                    <Setter Property="Cursor" Value="None"/>
+                </DataTrigger>
             </Style.Triggers>
         </Style>
     </Window.Style>
@@ -96,6 +101,7 @@
                         <MenuItem Header="{properties:TextBinding Menu.IsAutoStride}" IsChecked="{Binding IsAutoStride}" Command="{Binding AppCommand}" CommandParameter="ToggleIsAutoStride"/>
                         <MenuItem Header="{properties:TextBinding Menu.IsVertical}" IsChecked="{Binding IsVertical}" Command="{Binding AppCommand}" CommandParameter="ToggleIsVertical"/>
                         <MenuItem Header="{properties:TextBinding Menu.IsFlatPanel}" IsChecked="{Binding IsFlatPanel}" Command="{Binding AppCommand}" CommandParameter="ToggleIsFlatPanel"/>
+                        <MenuItem Header="{properties:TextBinding Menu.IsFollowMouse}" IsChecked="{Binding IsFollowMouse}" Command="{Binding AppCommand}" CommandParameter="ToggleIsFollowMouse"/>
                         <Separator/>
                         <MenuItem Header="{properties:TextBinding Menu.StoreLocation}" Command="{Binding AppCommand}" CommandParameter="StoreLocation"/>
                         <MenuItem Header="{properties:TextBinding Menu.RestoreLocation}" Command="{Binding AppCommand}" CommandParameter="RestoreLocation"/>

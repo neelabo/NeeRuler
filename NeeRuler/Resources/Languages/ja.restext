@@ -1,6 +1,7 @@
 Menu.IsVertical=縦に配置(_V)
 Menu.IsAutoStride=自動ストライド(_A)
 Menu.IsFlatPanel=フラット パネル(_F)
+Menu.IsFollowMouse=マウス追従(_M)
 Menu.StoreLocation=位置を記憶(_S)
 Menu.RestoreLocation=位置を復元(_R)
 Menu.Profiles=プロファイル(_P)

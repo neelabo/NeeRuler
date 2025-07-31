@@ -63,6 +63,9 @@ namespace NeeRuler.ViewModels
             propertyDependency.Add(nameof(_ruler.CaptureBitmap), nameof(CaptureBitmap));
             propertyDependency.Add(nameof(_ruler.ProfileIds), nameof(ProfileMenuItems));
             propertyDependency.Add(nameof(_ruler.InactiveWindowOpacity), nameof(InactiveWindowOpacity));
+            propertyDependency.Add(nameof(_ruler.IsFollowMouse), nameof(IsFollowMouse));
+
+            NativeOffset = new BaseLineNativeOffset(Window.GetWindow(rulerGrid), _ruler);
 
             AppCommand = new RelayCommand<string>(e => _commandMap.ExecuteCommand(e, null));
             AboutCommand = new RelayCommand(_ruler.OpenAbout);
@@ -140,7 +143,7 @@ namespace NeeRuler.ViewModels
             get => _ruler.TextLineBottomMargin;
             set => _ruler.TextLineBottomMargin = value;
         }
-        
+
         public bool IsFlatPanel
         {
             get => _ruler.IsFlatPanel;
@@ -182,6 +185,13 @@ namespace NeeRuler.ViewModels
             set => _ruler.IsVertical = value;
         }
 
+        public bool IsFollowMouse
+        {
+            get => _ruler.IsFollowMouse;
+            set => _ruler.IsFollowMouse = value;
+        }
+
+        public BaseLineNativeOffset NativeOffset { get; }
 
         public double LayoutAngle
         {
@@ -260,6 +270,11 @@ namespace NeeRuler.ViewModels
             {
                 _ruler.MoveDown();
             }
+        }
+
+        public void ToggleIsFollowMouse()
+        {
+            _ruler.ToggleIsFollowMouse();
         }
     }
 }
