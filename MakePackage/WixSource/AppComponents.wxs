@@ -1,0 +1,26 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <Fragment>
+
+      <ComponentGroup Id="MainComponents" Directory="INSTALLFOLDER">
+      <Files Include="!(bindpath.Contents)\**">
+          <Exclude Files="!(bindpath.Contents)\NeeRuler.exe" />
+          <Exclude Files="!(bindpath.Contents)\NeeRuler.exe.config" />
+          <Exclude Files="!(bindpath.Contents)\README.html" />
+          <Exclude Files="!(bindpath.Contents)\README.ja-jp.html" />
+      </Files>
+    </ComponentGroup>
+
+    <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+      <File Id="File_NeeRuler_exe" Source="!(bindpath.Contents)\NeeRuler.exe" Checksum="yes">
+        <Shortcut Id="Shortcut_NeeRuler_exe" Directory="ProgramMenuFolder" Name="NeeRuler" WorkingDirectory="INSTALLFOLDER" />
+      </File>
+      <File Id="File_NeeRuler_exe_config" Source="!(bindpath.Append)\NeeRuler.exe.config" />
+      <File Id="File_README_html" Source="!(bindpath.Append)\README.html" />
+      <File Id="File_README_ja_jp_html" Source="!(bindpath.Append)\README.ja-jp.html" />
+      <Component>
+        <RegistryValue Root="HKLM" Key="SOFTWARE\NeeLaboratory\NeeRuler" Name="InstallDir" Type="string" Value="[INSTALLFOLDER]" KeyPath="yes" />
+      </Component>
+    </ComponentGroup>
+
+  </Fragment>
+</Wix>

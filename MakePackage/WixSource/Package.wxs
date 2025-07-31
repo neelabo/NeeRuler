@@ -1,0 +1,43 @@
+﻿<?if $(sys.BUILDARCH) != "x64" ?>
+  <?error "This project only supports x64 architecture." ?>
+<?endif ?>
+
+<?define ProductName = "NeeRuler" ?>
+<?define UpgradeCode = "825E75B6-E2B4-4B3A-AFA7-A0D49D7118A2" ?>
+
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <Package Name="$(var.ProductName) $(var.AppVersion)" Version="$(var.ProductVersion)" Language="!(loc.language)" Codepage="!(loc.codepage)" Manufacturer="NeeLaboratory" UpgradeCode="$(var.UpgradeCode)">
+    <SummaryInformation Codepage="!(loc.codepage)" />
+
+    <MajorUpgrade DowngradeErrorMessage="!(loc.downgradeErrorMessage)" />
+
+    <MediaTemplate EmbedCab="yes" CompressionLevel="high" />
+
+    <Feature Id="ProductFeature" Title="NeeRuler" Level="1" AllowAdvertise="no" Display="expand" ConfigurableDirectory="INSTALLFOLDER" AllowAbsent="no">
+      <ComponentGroupRef Id="ProductComponents" />
+      <ComponentGroupRef Id="MainComponents" />
+    </Feature>
+
+    <Property Id="INSTALLFOLDER">
+      <RegistrySearch Id="InstallDirRegistry" Type="raw" Root="HKLM" Key="SOFTWARE\NeeLaboratory\NeeRuler" Name="InstallDir" />
+    </Property>
+
+
+    <!-- UI -->
+    <UIRef Id="WixUI_InstallDirEx" />
+    <UIRef Id="WixUI_ErrorProgressText" />
+    <Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER" />
+
+    <!-- Disable advertise shortcuts -->
+    <Property Id="DISABLEADVTSHORTCUTS" Value="1" />
+
+    <!-- The application icon displayed on the control panel -->
+    <Property Id="ARPPRODUCTICON" Value="App.ico" />
+    <Icon Id="App.ico" SourceFile="!(bindpath.Append)\App.ico" />
+
+    <InstallExecuteSequence>
+      <RemoveShortcuts Condition="Installed AND NOT UPGRADINGPRODUCTCODE" />
+    </InstallExecuteSequence>
+
+  </Package>
+</Wix>

@@ -1,5 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+  <Import Project="..\NeeRuler.props" />
+
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net48</TargetFramework>
@@ -12,10 +14,6 @@
     <!-- NOTE: NET Framework is officially supported up to 7.3; note that some language specifications in 9.0 are not available  -->
     <LangVersion>9.0</LangVersion>
     <Nullable>enable</Nullable>
-
-    <Version>1.0.0</Version>
-    <Authors>NeeLaboratory</Authors>
-    <Copyright>Copyright © 2024 Ito Mitsuhiro (nee)</Copyright>
   </PropertyGroup>
 
   <ItemGroup>

@@ -25,27 +25,6 @@ trap { break }
 
 $ErrorActionPreference = "stop"
 
-
-# Set up for your environment
-$Win10SDK = "C:\Program Files (x86)\Windows Kits\10\bin\10.0.22621.0\x64"
-
-# sync current directory
-[System.IO.Directory]::SetCurrentDirectory((Get-Location -PSProvider FileSystem).Path)
-
-
-
-#-----------------------
-# variables
-$product = 'NeeRuler'
-$scriptPath = Split-Path -Parent $MyInvocation.MyCommand.Path
-$solutionDir = Convert-Path "$scriptPath\.."
-$solution = "$solutionDir\$product.sln"
-$projectDir = "$solutionDir\$product"
-$project = "$projectDir\$product.csproj"
-$buildCountFile = "BuildCount.json"
-
-
-#---------------------
 # check parameters
 Write-Host "Target: $Target"
 Write-Host "Continue: $continue"
@@ -55,9 +34,16 @@ Write-Host "VersionPostfix: $versionPostfix"
 Write-Host
 Read-Host "Press Enter to continue"
 
+# environment
+$product = 'NeeRuler'
+$Win10SDK = "C:\Program Files (x86)\Windows Kits\10\bin\10.0.22621.0\x64"
+$issuesUrl = "https://github.com/neelabo/NeeRuler/issues"
 
-#---------------------
-# get fileversion
+# sync current directory
+[System.IO.Directory]::SetCurrentDirectory((Get-Location -PSProvider FileSystem).Path)
+
+
+# get file version
 function Get-FileVersion($fileName)
 {
 	throw "not supported."
@@ -68,45 +54,32 @@ function Get-FileVersion($fileName)
 	"$major.$minor"
 }
 
-#---------------------
-# get base vsersion
+# get version from .csproj and git
 function Get-Version($projectFile)
 {
 	$xml = [xml](Get-Content $projectFile)
-	$version = [String]$xml.Project.PropertyGroup.Version;
-	if ($version -match '(\d+\.\d+)\.\d+')
-	{
-		return $Matches[1]
+	
+	$version = [String]$xml.Project.PropertyGroup.VersionPrefix
+	
+	if ($version -match '\d+\.\d+\.\d+') {
+		return $version
 	}
 	
-    throw "Cannot get Version."
+	throw "Cannot get version."
 }
 
-#---------------------
-# get build count
-function Get-BuildCount()
-{
-	# auto increment build version
-	if (Test-Path $buildCountFile)
-	{
-		$data = Get-Content $buildCountFile | ConvertFrom-Json
-		return $data.build + 1
+# create display version (MajorVersion.MinorVersion) from raw version
+function Get-AppVersion($version) {
+	$tokens = $version.Split(".")
+	if ($tokens.Length -ne 3) {
+		throw "Wrong version format."
 	}
-	else
-	{
-		return 1
-	}
+	$tokens = $version.Split(".")
+	$majorVersion = [int]$tokens[0]
+	$minorVersion = [int]$tokens[1]
+	return "$majorVersion.$minorVersion"
 }
 
-#---------------------
-# set build count
-function Set-BuildCount($buildCount)
-{
-	$data = @{ build = $buildCount }
-	$data | ConvertTo-Json | Set-Content $buildCountFile -Encoding utf8
-}
-
-#---------------------
 # get git log
 function Get-GitLog()
 {
@@ -120,7 +93,6 @@ function Get-GitLog()
     return "[${branch}] $descrive to head", $date, $result
 }
 
-#---------------------
 # get git log (markdown)
 function Get-GitLogMarkdown($title)
 {
@@ -138,7 +110,6 @@ function Get-GitLogMarkdown($title)
 	"This list of changes was auto generated."
 }
 
-#--------------------
 # replace keyword
 function Replace-Content
 {
@@ -153,8 +124,6 @@ function Replace-Content
 	$file_contents | Out-File -Encoding UTF8 $filepath
 }
 
-
-#----------------------
 # build
 function Build-Project($platform, $outputDir, $options)
 {
@@ -179,7 +148,6 @@ function Build-ProjectSelfContained($platform)
 	Build-Project $platform "$product-$platform" $options
 }
 
-#----------------------
 # package section
 function New-Package($platform, $productName, $productDir, $packageDir)
 {
@@ -195,7 +163,6 @@ function New-Package($platform, $productName, $productDir, $packageDir)
 	New-Readme $packageDir "ja-jp" ".zip"
 }
 
-#----------------------
 # generate README.html
 function New-Readme($packageDir, $culture, $target)
 {
@@ -217,17 +184,17 @@ function New-Readme($packageDir, $culture, $target)
 
 	#Copy-Item "$solutionDir\THIRDPARTY_LICENSES.md" $readmeDir
 
-	#if ($target -eq ".canary")
-	#{
-	#	Get-GitLogMarkdown "$product <VERSION/> - ChangeLog" | Set-Content -Encoding UTF8 "$readmeDir\ChangeLog.md"
-	#}
-	#else
-	#{
-	#	Copy-Item "$readmeSource\ChangeLog.md" $readmeDir
-	#}
+	if ($target -eq ".canary")
+	{
+		Get-GitLogMarkdown "$product <VERSION/> - ChangeLog" | Set-Content -Encoding UTF8 "$readmeDir\ChangeLog.md"
+	}
+	else
+	{
+		Copy-Item "$readmeSource\ChangeLog.md" $readmeDir
+	}
 
 	$license = Get-Content "$solutionDir\LICENSE" -Raw
-	$postfix = $version
+	$postfix = $appVersion
 	$announce = ""
 	if ($target -eq ".canary")
 	{
@@ -241,7 +208,7 @@ function New-Readme($packageDir, $culture, $target)
 	Replace-Content "$readmeDir\Environment.md" "<VERSION/>" "$postfix"
 	Replace-Content "$readmeDir\Contact.md" "<VERSION/>" "$postfix"
 	Replace-Content "$readmeDir\License.md" "<LICENSE/>" "$license"
-	#Replace-Content "$readmeDir\ChangeLog.md" "<VERSION/>" "$postfix"
+	Replace-Content "$readmeDir\ChangeLog.md" "<VERSION/>" "$postfix"
 
 	$readmeHtml = "README.html"
 
@@ -276,7 +243,7 @@ function New-Readme($packageDir, $culture, $target)
 	#}
 
 	#$inputs += "$readmeDir\THIRDPARTY_LICENSES.md"
-	#$inputs += "$readmeDir\ChangeLog.md"
+	$inputs += "$readmeDir\ChangeLog.md"
 
 	$output = "$packageDir\$readmeHtml"
 	$css = "Readme\Style.html"
@@ -291,7 +258,6 @@ function New-Readme($packageDir, $culture, $target)
 	Remove-Item $readmeDir -Recurse
 }
 
-#--------------------------
 # remove ZIP
 function Remove-Zip($packageZip)
 {
@@ -301,15 +267,12 @@ function Remove-Zip($packageZip)
 	}
 }
 
-#--------------------------
 # archive to ZIP
 function New-Zip($packageDir, $packageZip)
 {
 	Compress-Archive $packageDir -DestinationPath $packageZip
 }
 
-#--------------------------
-#
 function New-ConfigForZip($inputDir, $config, $outputDir)
 {
 	# make config for zip
@@ -351,8 +314,6 @@ function New-ConfigForZip($inputDir, $config, $outputDir)
 	$sw.Close()
 }
 
-#--------------------------
-#
 function New-ConfigForMsi($inputDir, $config, $outputDir)
 {
 	# make config for installer
@@ -380,9 +341,6 @@ function New-ConfigForMsi($inputDir, $config, $outputDir)
 	$sw.Close()
 }
 
-
-#--------------------------
-#
 function New-ConfigForAppx($inputDir, $config, $outputDir)
 {
 	# make config for appx
@@ -411,8 +369,6 @@ function New-ConfigForAppx($inputDir, $config, $outputDir)
 	$sw.Close()
 }
 
-#--------------------------
-#
 function New-ConfigForDevPackage($inputDir, $config, $target, $outputDir)
 {
 	# make config for canary
@@ -441,8 +397,6 @@ function New-ConfigForDevPackage($inputDir, $config, $target, $outputDir)
 	$sw.Close()
 }
 
-#---------------------------
-#
 function New-EmptyFolder($dir)
 {
 	# remove folder
@@ -456,8 +410,6 @@ function New-EmptyFolder($dir)
 	$temp = New-Item $dir -ItemType Directory
 }
 
-#---------------------------
-#
 function New-PackageAppend($packageDir, $packageAppendDir)
 {
 	New-EmptyFolder $packageAppendDir
@@ -473,9 +425,6 @@ function New-PackageAppend($packageDir, $packageAppendDir)
 	Copy-Item "$projectDir\Resources\App.ico" $packageAppendDir
 }
 
-
-
-#--------------------------
 # remove Msi
 function Remove-Msi($packageAppendDir, $packageMsi)
 {
@@ -490,113 +439,63 @@ function Remove-Msi($packageAppendDir, $packageMsi)
 	}
 }
 
-#--------------------------
 # Msi
-function New-Msi($arch, $packageDir, $packageAppendDir, $packageMsi)
-{
-	$candle = $env:WIX + 'bin\candle.exe'
-	$light = $env:WIX + 'bin\light.exe'
-	$heat = $env:WIX + 'bin\heat.exe'
-	$torch = $env:WIX + 'bin\torch.exe'
-	$wisubstg = "$Win10SDK\wisubstg.vbs"
-	$wilangid = "$Win10SDK\wilangid.vbs"
+function New-Msi($arch, $packageDir, $packageAppendDir, $packageMsi) {
 
-	$1041Msi = "$packageAppendDir\1041.msi"
-	$1041Mst = "$packageAppendDir\1041.mst"
+    # Require Wix toolset (e.g.; version 5.0.2)
+    # > dotnet tool install --global wix -version 5.0.2
+    #
+    # Use WiX UI Extension
+    # > wix extension add --global WixToolset.UI.wixext/5.0.2
 
-	#-------------------------
-	# WiX
-	#-------------------------
+    $wisubstg = "$Win10SDK\wisubstg.vbs"
+    $wilangid = "$Win10SDK\wilangid.vbs"
 
-	$ErrorActionPreference = "stop"
+    function New-MsiSub($arch, $culture, $packageMsi) {
 
-	function New-MainComponents
-	{
-		$wxs = Convert-Path "WixSource\$arch\MainComponents.wxs"
-		& $heat dir "$packageDir" -cg MainComponents -ag -pog:Binaries -sfrag -srd -sreg -var var.ContentDir -dr INSTALLFOLDER -out $wxs
-		if ($? -ne $true)
-		{
-			throw "heat error"
-		}
+        $properties = @(
+            "-d", "AppVersion=$appVersion",
+            "-d", "ProductVersion=$version",
+            "-b", "Contents=$(Convert-Path $packageDir)",
+            "-b", "Append=$(Convert-Path $packageAppendDir)",
+            "-ext", "WixToolset.UI.wixext"
+        )
 
-		[xml]$xml = Get-Content $wxs
+        Write-Host "[wix] build $packageMsi -culture $culture" -fore Cyan 
+        & wix.exe build -arch $arch -out $packageMsi -culture $culture @properties WixSource\*.wx?
+        if ($? -ne $true) {
+            throw "wix build error"
+        }
+    }
 
-		Remove-WixComponentNode $xml "$product.exe"
-		Remove-WixComponentNode $xml "$product.exe.config"
-		Remove-WixComponentNode $xml "README.html"
-		Remove-WixComponentNode $xml "README.ja-jp.html"
-		
-		$xml.Save($wxs)
-	}
+    $1033Msi = "$packageAppendDir\1033.msi"
+    $1041Msi = "$packageAppendDir\1041.msi"
+    $1041Mst = "$packageAppendDir\1041.mst"
 
-	function Remove-WixComponentNode($xml, $name)
-	{
-		$node = $xml.Wix.Fragment[0].DirectoryRef.Component | Where-Object{(Split-Path $_.File.Source -Leaf) -eq $name}
-		if ($null -ne $node)
-		{
-			$componentId = $node.Id
-			$xml.Wix.Fragment[0].DirectoryRef.RemoveChild($node)
+    New-MsiSub $arch "en-us" $1033Msi
+    New-MsiSub $arch "ja-jp" $1041Msi 
 
-			$node = $xml.Wix.Fragment[1].ComponentGroup.ComponentRef | Where-Object{$_.Id -eq $componentId}
-			$xml.Wix.Fragment[1].ComponentGroup.RemoveChild($node)
-		}
-	}
+    Write-Host "[wix] msi transform $1041Mst" -fore Cyan
+    & wix.exe msi transform -p -t language $1033Msi $1041Msi -out $1041Mst
+    if ($? -ne $true) {
+        throw "wix msi transform error"
+    }
 
-	function New-MsiSub($packageMsi, $culture)
-	{
-		Write-Host "$packageMsi : $culture" -fore Cyan
-		
-		$wixObjDir = "$packageAppendDir\obj.$culture"
-		New-EmptyFolder $wixObjDir
+    Copy-Item $1033Msi $packageMsi
 
-		& $candle -arch $arch -d"Platform=$arch" -d"BuildVersion=$buildVersion" -d"ProductVersion=$version" -d"ContentDir=$packageDir\\" -d"AppendDir=$packageDir.append\\" -d"LibrariesDir=$packageDir\\Libraries" -d"culture=$culture" -ext WixNetFxExtension -out "$wixObjDir\\"  WixSource\*.wxs .\WixSource\$arch\*.wxs
-		if ($? -ne $true)
-		{
-			throw "candle error"
-		}
+    Write-Host "[msi] wisubstg $packageMsi" -fore Cyan
+    & cscript "$wisubstg" "$packageMsi" $1041Mst 1041
+    if ($? -ne $true) {
+        throw "$wisubstg error"
+    }
 
-		& $light -out "$packageMsi" -ext WixUIExtension -ext WixNetFxExtension -cultures:$culture -loc WixSource\Language-$culture.wxl  "$wixObjDir\*.wixobj"
-		if ($? -ne $true)
-		{
-			throw "light error" 
-		}
-	}
-
-	## Create MainComponents.wxs
-	if ($updateComponent)
-	{
-		Write-Host "Create MainComponents.wsx`n" -fore Cyan
-		New-MainComponents
-	}
-
-	New-MsiSub $packageMsi "en-us"
-	New-MsiSub $1041Msi "ja-jp"
-
-	& $torch -p -t language $packageMsi $1041Msi -out $1041Mst
-	if ($? -ne $true)
-	{
-		throw "torch error"
-	}
-
-	#-------------------------
-	# WinSDK
-	#-------------------------
-
-	& cscript "$wisubstg" "$packageMsi" $1041Mst 1041
-	if ($? -ne $true)
-	{
-		throw "wisubstg.vbs error"
-	}
-
-	& cscript "$wilangid" "$packageMsi" Package 1033,1041
-	if ($? -ne $true)
-	{
-		throw "wilangid.vbs error"
-	}
+    Write-Host "[msi] wilangid $packageMsi" -fore Cyan
+    & cscript "$wilangid" "$packageMsi" Package 1033,1041
+    if ($? -ne $true) {
+        throw "$wilangid error"
+    }
 }
 
-
-#--------------------------
 # Appx remove
 function Remove-Appx($packageAppendDir, $appx)
 {
@@ -611,7 +510,6 @@ function Remove-Appx($packageAppendDir, $appx)
 	}
 }
 
-#--------------------------
 # Appx 
 function New-Appx($arch, $packageDir, $packageAppendDir, $appx)
 {
@@ -659,8 +557,6 @@ function New-Appx($arch, $packageDir, $packageAppendDir, $appx)
 	}
 }
 
-
-#--------------------------
 # archive to Canary.ZIP
 function Remove-Canary()
 {
@@ -680,8 +576,6 @@ function New-Canary($packageDir)
 	New-DevPackage $packageDir $packageCanaryDir $packageCanary ".canary"
 }
 
-
-#--------------------------
 # archive to Beta.ZIP
 function Remove-Beta()
 {
@@ -701,7 +595,6 @@ function New-Beta($packageDir)
 	New-DevPackage $packageDir $packageBetaDir $packageBeta ".beta"
 }
 
-#--------------------------
 # archive to Canary/Beta.ZIP
 function New-DevPackage($packageDir, $devPackageDir, $devPackage, $target)
 {
@@ -716,7 +609,6 @@ function New-DevPackage($packageDir, $devPackageDir, $devPackage, $target)
 	Compress-Archive $devPackageDir -DestinationPath $devPackage
 }
 
-#--------------------------
 # remove build objects
 function Remove-BuildObjects
 {
@@ -836,29 +728,48 @@ function Export-Current($packageDir)
 	}
 }
 
+function Update-Version {
+	Write-Host "`n`[Update NeeRuler Version] ...`n" -fore Cyan
+	$versionSuffix = switch ( $Target ) {
+		"Dev" { 'dev' }
+		"Canary" { 'canary' }
+		"Beta" { 'beta' }
+		default { '' }
+	}
+	..\CreateVersionProps.ps1 -suffix $versionSuffix
+}
 
 
 #======================
 # main
 #======================
 
+# variables
+$scriptPath = Split-Path -Parent $MyInvocation.MyCommand.Path
+$solutionDir = Convert-Path "$scriptPath\.."
+$solution = "$solutionDir\$product.sln"
+$projectDir = "$solutionDir\$product"
+$project = "$projectDir\$product.csproj"
+$versionProps = "$solutionDir\_Version.props"
+
+Update-Version
+
 # versions
-$version = Get-Version $project
-$buildCount = Get-BuildCount
-$buildVersion = "$version.$buildCount"
-$assemblyVersion = "$version.$buildCount.0"
+$version = Get-Version $versionProps
+$appVersion = Get-AppVersion $version
+$assemblyVersion = "$version.0"
 $revision = (& git rev-parse --short HEAD).ToString()
 $dateVersion = (Get-Date).ToString("MMdd") + $versionPostfix
 
 $publishDir = "Publish"
 $publishDir_x64 = "$publishDir\$product-x64"
-$packagePrefix = "$product$version"
-$packageDir_x64 = "$product$version-x64"
+$packagePrefix = "$product$appVersion"
+$packageDir_x64 = "$product$appVersion-x64"
 $packageAppendDir_x64 = "$packageDir_x64.append"
-$packageZip_x64 = "${product}${version}.zip"
-$packageMsi_x64 = "${product}${version}.msi"
-$packageAppxDir_x64 = "${product}${version}-appx-x64"
-$packageX64Appx = "${product}${version}.msix"
+$packageZip_x64 = "${product}${appVersion}.zip"
+$packageMsi_x64 = "${product}${appVersion}.msi"
+$packageAppxDir_x64 = "${product}${appVersion}-appx-x64"
+$packageX64Appx = "${product}${appVersion}.msix"
 $packageCanaryDir = "${product}Canary"
 $packageCanary = "${product}Canary${dateVersion}.zip"
 $packageCanaryWild = "${product}Canary*.zip"
@@ -912,21 +823,9 @@ if (-not $continue)
 	Export-Current $packageDir_x64
 }
 
-#--------------------------
-# saev buid version
-if ((-not $continue) -and ($Target -ne "Dev"))
-{
-	Write-Host "Update BuildVersion: $buildVersion"
-	Set-BuildCount $buildCount
-}
-else
-{
-	Write-Host "Keep BuildVersion"
-}
 
-#-------------------------
 # Finish.
-Write-Host "`nBuild $buildVersion All done.`n" -fore Green
+Write-Host "`nBuild $version All done.`n" -fore Green
 
 
 

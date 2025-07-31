@@ -1,0 +1,5 @@
+﻿<WixLocalization Culture="en-us" xmlns="http://wixtoolset.org/schemas/v4/wxl">
+    <String Id="language" Value="1033" />
+    <String Id="codepage" Value="1252" />
+    <String Id="downgradeErrorMessage" Value="A new version of NeeRuler has already been installed." />
+</WixLocalization>
