@@ -83,6 +83,32 @@ function Get-JsonContentFromZip {
     $zip.Dispose()
 }
 
+# ZIPファイルから１エントリをXMLとして読み込む
+function Get-XmlContentFromZip {
+    param (
+        [parameter(mandatory = $true)][string]$Path,
+        [parameter(mandatory = $true)][string]$EntryName
+    )
+
+    $zip = [System.IO.Compression.ZipFile]::OpenRead($Path)
+    $entry = $zip.Entries | Where-Object { $_.Name -eq $EntryName }
+
+    if ($null -ne $entry) {
+        $stream = $entry.Open()
+        $reader = New-Object System.IO.StreamReader($stream)
+        $content = $reader.ReadToEnd()
+        $reader.Close()
+        $stream.Close()
+        $xmlContent = [xml]$content
+        Write-Output $xmlContent
+    }
+    else {
+        throw "File not found: $EntryName"
+    }
+
+    $zip.Dispose()
+}
+
 # ファイルのアップロード
 function Upload-Asset {
     param (
@@ -190,10 +216,11 @@ if (-not $SkipCheckRepository) {
     }
 
     # パッケージのリビジョンが最新版であるかチェック
-    $setting = Get-JsonContentFromZip -Path $package -EntryName "NeeRuler.settings.json"
+    $setting = Get-XmlContentFromZip -Path $package -EntryName "NeeRuler.exe.config"
     $git_hash = git show --format='%h' --no-patch
-    if ($git_hash -ne $setting.Revision) {
-        throw "The package is not made with the latest revision: $($setting.Revision), latest is $git_hash"
+    $revision = $setting.configuration.appSettings.add | Where-Object { $_.key -eq 'Revision' } | Select-Object -ExpandProperty value
+    if ($git_hash -ne $revision) {
+        throw "The package is not made with the latest revision: $revision, latest is $git_hash"
     }
 }
 

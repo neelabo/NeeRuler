@@ -27,6 +27,7 @@
 |----|----
 |左ボタン|次の行に進む
 |右ボタン|コンテキスト メニュー
+|中ボタン|マウス追従モードの切り替え
 |マウス ホイール|テキスト ライン上部の余白を増減する
 
 ショートカット キーについてはプロファイル フォルダーの `KeyConfig.json` を確認してください。
@@ -77,6 +78,8 @@
 |Layout|BackgroundColor|色|背景色
 |Layout|TextLineColor|色|テキスト ラインの色
 |Layout|BaseLineColor|色|ベースラインの色
+|Layout|InactiveWindowOpacity|数値|ウィンドウが非アクティブ時の不透明度 (0.0-1.0)
+|Layout|IsFollowMouse|真偽|マウス追従モードにする
 
 ### KeyConfig.json
 
@@ -91,6 +94,7 @@
 |ToggleIsVertical|`V`|縦方向と横方向の切り替え
 |ToggleIsAutoStride|`E`|自動ストライドの切り替え
 |ToggleIsFlatPanel|`F`|フラット パネルの切り替え
+|ToggleIsFollowMouse||マウス追従モードの切り替え
 |MoveUp|`W` `Up`|上に移動
 |MoveDown|`S` `Down`|下に移動
 |MoveLeft|`A` `Left`|左に移動
