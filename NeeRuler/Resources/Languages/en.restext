@@ -10,6 +10,6 @@ Menu.Exit=_Exit
 Menu.About=_About...
 Notify.AutoStride=Auto stride: {0}
 Notify.StoreLocation=Store location
-Notify.FailedToLoad=Failed to load file: {0}
+Notify.FailedToLoadFile=Failed to load file: {0}
 Word.On=On
 Word.Off=Off
